@@ -1,0 +1,27 @@
+{
+  "name": "whatsapp-gpt-bot",
+  "version": "1.0.0",
+  "description": "WhatsApp Web automation bot with ChatGPT integration",
+  "main": "server.js",
+  "scripts": {
+    "start": "pm2 start ecosystem.config.js",
+    "stop": "pm2 stop ecosystem.config.js",
+    "logs": "pm2 logs whatsapp-bot",
+    "restart": "pm2 restart ecosystem.config.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "dotenv": "^16.4.7",
+    "es-errors": "^1.3.0",
+    "express": "^4.18.2",
+    "openai": "^4.104.0",
+    "puppeteer": "^21.5.0",
+    "qrcode-terminal": "^0.12.0",
+    "socket.io": "^4.7.2",
+    "whatsapp-web.js": "^1.34.6",
+    "winston": "^3.11.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>WhatsApp Automation Premium</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00d2ff;
+            --secondary: #3a7bd5;
+            --accent: #7c3aed;
+            --bg: #030712;
+            --card-bg: rgba(15, 23, 42, 0.6);
+            --text: #f8fafc;
+            --success: #10b981;
+            --warning: #f59e0b;
+            --error: #ef4444;
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glow: rgba(0, 210, 255, 0.3);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Outfit', sans-serif;
+        }
+
+        body {
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Animated Mesh Background */
+        .mesh-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+            background: #030712;
+        }
+
+        .blob {
+            position: absolute;
+            width: 500px;
+            height: 500px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            filter: blur(80px);
+            border-radius: 50%;
+            opacity: 0.15;
+            animation: move 20s infinite alternate;
+        }
+
+        .blob-2 {
+            background: linear-gradient(135deg, var(--accent), var(--secondary));
+            width: 400px;
+            height: 400px;
+            right: -100px;
+            top: -100px;
+            animation-duration: 25s;
+            animation-delay: -5s;
+        }
+
+        .blob-3 {
+            background: linear-gradient(135deg, #f472b6, #7c3aed);
+            width: 300px;
+            height: 300px;
+            left: 20%;
+            bottom: -50px;
+            animation-duration: 30s;
+            animation-delay: -10s;
+        }
+
+        @keyframes move {
+            from { transform: translate(0, 0) scale(1); }
+            to { transform: translate(100px, 100px) scale(1.2); }
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            z-index: 10;
+        }
+
+        .glass-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 32px;
+            padding: 48px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+                        inset 0 1px 1px var(--glass-border);
+            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1), rgbFlow 4s linear infinite;
+            position: relative;
+            overflow: hidden;
+        }
+
+        @keyframes rgbFlow {
+            0% { border-color: rgba(255, 0, 0, 0.5); box-shadow: 0 0 20px rgba(255, 0, 0, 0.2), 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+            25% { border-color: rgba(0, 255, 0, 0.5); box-shadow: 0 0 20px rgba(0, 255, 0, 0.2), 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+            50% { border-color: rgba(0, 0, 255, 0.5); box-shadow: 0 0 20px rgba(0, 0, 255, 0.2), 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+            75% { border-color: rgba(255, 255, 0, 0.5); box-shadow: 0 0 20px rgba(255, 255, 0, 0.2), 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+            100% { border-color: rgba(255, 0, 0, 0.5); box-shadow: 0 0 20px rgba(255, 0, 0, 0.2), 0 25px 50px -12px rgba(0, 0, 0, 0.5); }
+        }
+
+        /* Faster color change as requested (1s cycle for 4 colors means 4s total or 1s total?) */
+        /* User said "color change every 1 second". I'll make the whole cycle 4s so each dominant color stays roughly 1s. */
+        /* Alternatively, I can use hue-rotate for a smoother "flow" */
+        .glass-card::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8, #ff0000);
+            background-size: 400%;
+            z-index: -1;
+            filter: blur(5px);
+            width: calc(100% + 4px);
+            height: calc(100% + 4px);
+            animation: flowingRGB 1s linear infinite;
+            opacity: 0.3;
+            border-radius: 34px;
+        }
+
+        @keyframes flowingRGB {
+            0% { background-position: 0 0; }
+            100% { background-position: 400% 0; }
+        }
+
+        .glass-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.05),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        .glass-card:hover::before {
+            left: 100%;
+            transition: 0.8s;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        h1 {
+            font-size: 3rem;
+            font-weight: 600;
+            letter-spacing: -0.02em;
+            background: linear-gradient(to right, #fff, var(--primary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 20px;
+            border-radius: 9999px;
+            background: rgba(255, 255, 255, 0.03);
+            font-size: 0.9rem;
+            font-weight: 500;
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+        }
+
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--warning);
+            margin-right: 12px;
+            box-shadow: 0 0 15px var(--warning);
+            position: relative;
+        }
+
+        .status-dot::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            border-radius: 50%;
+            border: 2px solid var(--warning);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        .status-dot.active {
+            background: var(--success);
+            box-shadow: 0 0 15px var(--success);
+        }
+
+        .status-dot.active::after { border-color: var(--success); }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        @media (max-width: 768px) {
+            .main-content { grid-template-columns: 1fr; }
+        }
+
+        .qr-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 24px;
+            padding: 40px;
+            border: 1px solid var(--glass-border);
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .qr-section:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 210, 255, 0.3);
+        }
+
+        #qr-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 16px;
+            margin-bottom: 24px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
+            animation: zoomIn 0.5s ease-out;
+        }
+
+        @keyframes zoomIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        #qr-container canvas {
+            display: block;
+            width: 220px !important;
+            height: 220px !important;
+        }
+
+        .info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        .info-card {
+            background: rgba(255, 255, 255, 0.02);
+            border-radius: 20px;
+            padding: 24px;
+            border: 1px solid var(--glass-border);
+            transition: all 0.3s ease;
+        }
+
+        .info-card:hover {
+            background: rgba(255, 255, 255, 0.04);
+            border-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .info-card h3 {
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.5);
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 600;
+        }
+
+        .info-card p {
+            font-size: 1.1rem;
+            font-weight: 400;
+        }
+
+        .log-container {
+            height: 180px;
+            overflow-y: auto;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+            font-size: 0.85rem;
+            padding-right: 8px;
+        }
+
+        .log-container::-webkit-scrollbar { width: 4px; }
+        .log-container::-webkit-scrollbar-track { background: transparent; }
+        .log-container::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
+
+        .log-entry {
+            margin-bottom: 8px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid var(--primary);
+            animation: slideInLeft 0.3s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-10px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 48px;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.3);
+            letter-spacing: 0.05em;
+        }
+
+        /* Modern Loader */
+        .loader-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .loader {
+            width: 48px;
+            height: 48px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-left-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+
+<body>
+    <div class="mesh-bg">
+        <div class="blob"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <div class="container">
+        <div class="glass-card">
+            <header>
+                <h1>WhatsApp AI</h1>
+                <div class="status-badge" id="status-badge">
+                    <div id="status-dot" class="status-dot"></div>
+                    <span id="status-text">Connecting...</span>
+                </div>
+            </header>
+
+            <div class="main-content">
+                <div class="qr-section">
+                    <div id="qr-loader-wrapper" class="loader-wrapper">
+                        <div class="loader"></div>
+                        <p style="color: rgba(255,255,255,0.4); font-size: 0.9rem;">Launching Ultra-Fast Engine...</p>
+                    </div>
+                    <div id="qr-container" class="hidden">
+                        <!-- QR Code will be rendered here -->
+                    </div>
+                    <p id="qr-msg" style="margin-top: 20px; color: rgba(255,255,255,0.5); text-align: center; font-size: 0.95rem; line-height: 1.5;">
+                        Scan the QR code to bridge your WhatsApp with AI.
+                    </p>
+                </div>
+
+                <div class="info-section">
+                    <div class="info-card">
+                        <h3>Engine status</h3>
+                        <p id="system-info">Booting Automation...</p>
+                    </div>
+                    <div class="info-card">
+                        <h3>Live Feed</h3>
+                        <div id="logs" class="log-container">
+                            <div class="log-entry">Searching for active session...</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="footer-note">Powered by Premium Automation Engine v3.0 • <span id="runtime">00:00:00</span></p>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+    <script>
+        const socket = io();
+        const statusText = document.getElementById('status-text');
+        const statusDot = document.getElementById('status-dot');
+        const statusBadge = document.getElementById('status-badge');
+        const qrContainer = document.getElementById('qr-container');
+        const qrLoader = document.getElementById('qr-loader-wrapper');
+        const logsContainer = document.getElementById('logs');
+        const systemInfo = document.getElementById('system-info');
+        const runtimeEl = document.getElementById('runtime');
+
+        // Runtime counter
+        let startTime = Date.now();
+        setInterval(() => {
+            const diff = Math.floor((Date.now() - startTime) / 1000);
+            const h = String(Math.floor(diff / 3600)).padStart(2, '0');
+            const m = String(Math.floor((diff % 3600) / 60)).padStart(2, '0');
+            const s = String(diff % 60).padStart(2, '0');
+            runtimeEl.textContent = `${h}:${m}:${s}`;
+        }, 1000);
+
+        function addLog(msg) {
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            entry.textContent = `${msg}`;
+            logsContainer.prepend(entry);
+            
+            // Limit logs
+            if (logsContainer.children.length > 50) {
+                logsContainer.removeChild(logsContainer.lastChild);
+            }
+        }
+
+        socket.on('status', (status) => {
+            statusText.textContent = status;
+            systemInfo.textContent = status;
+            addLog(`⚡ System: ${status}`);
+
+            if (status === 'Connected' || status === 'Authenticated') {
+                statusDot.classList.add('active');
+                qrContainer.classList.remove('hidden'); // Show the box
+                qrLoader.classList.add('hidden');
+                qrContainer.innerHTML = '<div style="font-size: 4rem;">✅</div>';
+                document.getElementById('qr-msg').innerHTML = '<span style="color: var(--success); font-weight: 600;">✓ Successfully Linked</span><br>Your AI is now managing messages.';
+                statusBadge.style.boxShadow = '0 0 20px rgba(16, 185, 129, 0.2)';
+            } else {
+                statusDot.classList.remove('active');
+                statusBadge.style.boxShadow = 'none';
+            }
+        });
+
+        socket.on('qr', (qr) => {
+            // Instant display
+            qrLoader.classList.add('hidden');
+            qrContainer.classList.remove('hidden');
+            addLog('New bridge signal received.');
+
+            // Clean container and create canvas immediately
+            qrContainer.innerHTML = '';
+            const canvas = document.createElement('canvas');
+            // Optimistic rendering
+            canvas.style.opacity = '0';
+            qrContainer.appendChild(canvas);
+
+            QRCode.toCanvas(canvas, qr, {
+                width: 220,
+                margin: 0,
+                color: {
+                    dark: '#030712',
+                    light: '#ffffff'
+                }
+            }, (error) => {
+                if (error) {
+                    console.error(error);
+                    addLog('❌ Failed to render QR');
+                } else {
+                    canvas.style.transition = 'opacity 0.2s ease-in';
+                    canvas.style.opacity = '1';
+                }
+            });
+        });
+
+        // Add some interaction jank prevention
+        window.addEventListener('load', () => {
+            addLog('Dashboard ready.');
+        });
+    </script>
+</body>
+
+</html>
