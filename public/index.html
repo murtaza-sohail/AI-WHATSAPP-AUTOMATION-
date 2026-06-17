@@ -105,7 +105,7 @@
             padding: 48px;
             box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
                         inset 0 1px 1px var(--glass-border);
-            animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1), rgbFlow 4s linear infinite;
+            animation: slideUp 0.2s cubic-bezier(0.16, 1, 0.3, 1), rgbFlow 4s linear infinite;
             position: relative;
             overflow: hidden;
         }
@@ -265,7 +265,7 @@
             border-radius: 16px;
             margin-bottom: 24px;
             box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3);
-            animation: zoomIn 0.5s ease-out;
+            animation: zoomIn 0.1s ease-out;
         }
 
         @keyframes zoomIn {
@@ -498,7 +498,6 @@
                     console.error(error);
                     addLog('❌ Failed to render QR');
                 } else {
-                    canvas.style.transition = 'opacity 0.2s ease-in';
                     canvas.style.opacity = '1';
                 }
             });
